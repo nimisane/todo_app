@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do_app/cubits/cubits.dart';
+import 'package:to_do_app/blocs/blocs.dart';
 
 class CreateTodo extends StatefulWidget {
   CreateTodo({super.key});
@@ -35,8 +35,8 @@ class _CreateTodoState extends State<CreateTodo> {
                   onPressed: () {
                     if (todoController.text.trim().isNotEmpty) {
                       context
-                          .read<TodoListCubit>()
-                          .addTodo(todoController.text);
+                          .read<TodoListBloc>().add(AddTodoEvent(todoDesc: todoController.text));
+                          // .addTodo(todoController.text);
                       Navigator.pop(context);
                     }
                   },

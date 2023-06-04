@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do_app/cubits/cubits.dart';
+import 'package:to_do_app/blocs/blocs.dart';
 
 import 'pages/todos_page.dart';
 
@@ -17,29 +17,32 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TodoFilterCubit>(
-          create: (context) => TodoFilterCubit(),
+        BlocProvider<TodoFilterBloc>(
+          create: (context) => TodoFilterBloc(),
         ),
-        BlocProvider<TodoSearchCubit>(
-          create: (context) => TodoSearchCubit(),
+        BlocProvider<TodoSearchBloc>(
+          create: (context) => TodoSearchBloc(),
         ),
-        BlocProvider<TodoListCubit>(
-          create: (context) => TodoListCubit(),
+        BlocProvider<TodoListBloc>(
+          create: (context) => TodoListBloc(),
         ),
-        BlocProvider<ActiveTodoCountCubit>(
-          create: (context) => ActiveTodoCountCubit(
+        BlocProvider<ActiveTodoCountBlocBloc>(
+          create: (context) => ActiveTodoCountBlocBloc(
             initialActiveTodoCount:
-                context.read<TodoListCubit>().state.todos.length,
+                context.read<TodoListBloc>().state.todos.length,
+            todoListBloc: BlocProvider.of<TodoListBloc>(context),
           ),
         ),
-        BlocProvider<FilterTodosCubit>(
-          create: (context) => FilterTodosCubit(
-            initialTodos: context.read<TodoListCubit>().state.todos,
-          ),
+        BlocProvider<FilterTodoBlocBloc>(
+          create: (context) => FilterTodoBlocBloc(
+              initialTodos: context.read<TodoListBloc>().state.todos,
+              todoListBloc: BlocProvider.of<TodoListBloc>(context),
+              todoFilterBloc: BlocProvider.of<TodoFilterBloc>(context),
+              todoSearchBloc: BlocProvider.of<TodoSearchBloc>(context)),
         ),
       ],
       child: MaterialApp(
-        title: 'To Do Cubit App',
+        title: 'To Do Bloc App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
