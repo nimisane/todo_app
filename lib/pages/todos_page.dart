@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_do_app/models/todos_model.dart';
 
 import 'package:to_do_app/pages/create_todo.dart';
 import 'package:to_do_app/pages/show_todos.dart';
@@ -52,13 +53,24 @@ class TodoHeader extends StatelessWidget {
           "TODO",
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.w500),
         ),
-        BlocBuilder<ActiveTodoCountBlocBloc, ActiveTodoCountState>(
-          builder: (context, state) {
-            return Text(
-              "${state.activeTodoCount} items left",
-              style: const TextStyle(fontSize: 20, color: Colors.redAccent),
-            );
+        BlocListener<TodoListBloc, TodoListState>(
+          listener: (context, state) {
+            final int activeCount = state.todos
+                .where((Todos element) => !element.completed)
+                .toList()
+                .length;
+
+            context.read<ActiveTodoCountBlocBloc>().add(
+                CalculateActiveTodoCountEvent(activeTodoCount: activeCount));
           },
+          child: BlocBuilder<ActiveTodoCountBlocBloc, ActiveTodoCountState>(
+            builder: (context, state) {
+              return Text(
+                "${state.activeTodoCount} items left",
+                style: const TextStyle(fontSize: 20, color: Colors.redAccent),
+              );
+            },
+          ),
         ),
       ],
     );
